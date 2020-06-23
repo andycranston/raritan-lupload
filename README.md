@@ -38,6 +38,12 @@ Upload of Lua script "monitor-current" to PDU px3rack successful
 
 If there was a problem an error message will be displayed.
 
+## Script output buffer gets cleared after successful upload
+
+After the successful upload of a script any output in the script output buffer
+for that script on the PDU is cleared. This is so the updated script has a fresh start
+when it is next run.
+
 ## Command line options
 
 There are a few command line options that can be specified.
@@ -126,15 +132,30 @@ Note: the above comments must exactly for this to feature work.
 
 ## Default arguments
 
-At present if a script requires any default arguments they will need to be recreated
-after each upload. This is on the `To Do` list.
+If the script requires one or more default arguments specified then this is possible
+by adding specially formatted comments at the beginning of the script. For example
+to add a default argument called `duration` with a value of `60` add the following
+comment at the begining of the script:
+
+```
+-- defaultArg duration "60"
+```
+
+Note that the value must enclosed in double quotes. If the value itself needs to
+contain a double quote just include it. For example:
+
+```
+-- defaultArg quote """
+```
+
+will set the value `quote` to the single character `"`.
 
 ## To Do
 
 Here are some of the things that would be good to add to the `lupload.py` program:
 
-+ Have a way to specify default arguments
 + Put a comment at the begining of the uploaded script with upload details (date, time, user)
+
 
 ----------------------------------------------------------------------
 
