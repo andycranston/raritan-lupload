@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 #
-# @(!--#) @(#) lupload.py, version 006, 23-june-2020
+# @(!--#) @(#) lupload.py, version 008, 23-june-2020
 #
 # copy a Lua script to a Raritan intelligent PDU
 #
@@ -22,6 +22,7 @@ DEFAULT_TIMEOUT           = 10
 
 DEFINE_AUTOSTART          = 'autoStart:=yes'
 DEFINE_AUTORESTART        = 'autoRestart:=yes'
+DEFINE_DEFAULTARG         = 'defaultArg'
 
 ############################################################################
 
@@ -55,7 +56,7 @@ def errortext(errornumber):
 
 ############################################################################
 
-def validscriptname(scriptname):
+def validscriptoridname(scriptname):
     validflag = False
     
     if scriptname == '':
@@ -70,15 +71,6 @@ def validscriptname(scriptname):
     
     return True
 
-############################################################################
-
-def basename(filename, suffixlist):
-    for suffix in suffixlist:
-        if filename.lower().endswith('.' + suffix):
-            return filename[:-(len(suffix)+1)]
-    
-    return filename
-            
 ############################################################################
 
 def extractstartrestart(filename):
@@ -113,6 +105,46 @@ def extractstartrestart(filename):
     fh.close()
     
     return start, restart
+
+############################################################################
+
+def extractdefaultargs(filename):
+    global progname
+    
+    try:
+        fh = open(filename, 'r', encoding='utf-8')
+    except FileNotFoundError:
+        print('{}: cannot open file "{}" for reading'.format(progname, filename), file=sys.stderr)
+        sys.exit(1)
+
+    defargs = {}    
+    
+    for line in fh:
+        line = line.rstrip()
+        
+        if len(line) == 0:
+            continue
+        
+        if line[0:2] != '--':
+            break
+            
+        words = line.split()
+        
+        if len(words) >= 4:
+            if words[1] == DEFINE_DEFAULTARG:
+                if validscriptoridname(words[2]):
+                    varname = words[2]
+                    if line[-1] == '"':
+                        lastdoublequote = len(line) - 1
+                        firstdoublequote = line.find('"')
+                        if firstdoublequote != -1:
+                            if firstdoublequote < lastdoublequote:
+                                varvalue = line[firstdoublequote+1:lastdoublequote]
+                                defargs[varname] = varvalue
+                
+    fh.close()
+    
+    return defargs
 
 ############################################################################
 
@@ -153,7 +185,7 @@ def main():
     
     basescript = script[:-4]
     
-    if not validscriptname(basescript):
+    if not validscriptoridname(basescript):
         print('{}: script name "{}" contains invalid characters'.format(progname, script), file=sys.stderr)
         sys.exit(1)
     
@@ -176,9 +208,13 @@ def main():
     autoStart, autoRestart = extractstartrestart(script)
     
     ### print(autoStart, autoRestart)
+    
+    defaultArgs = extractdefaultargs(script)
+    
+    print(defaultArgs)
         
     scriptoptions = raritan.rpc.luaservice.ScriptOptions(
-                  defaultArgs = {},
+                  defaultArgs = defaultArgs,
                   autoStart = autoStart,
                   autoRestart = autoRestart
               )
@@ -190,6 +226,14 @@ def main():
     else:
         print('{}: upload failed with error code {} - {}'.format(progname, rc, errortext(rc)), file=sys.stderr)
         sys.exit(1)
+    
+    rc = luaservice_proxy.clearScriptOutput(basescript)
+    
+    if rc == 0:
+        print('Script "{}" output buffer cleared'.format(basescript))
+    else:
+        print('INFO: unable to clear output buffer of script "{}"'.format(basescript))
+        print('      return code = {} - {}'.format(rc, errortext(rc)))
 
     return 0
 
