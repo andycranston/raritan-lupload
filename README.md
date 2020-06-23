@@ -19,7 +19,7 @@ Set the `UPASS` environment variable to the password of the `admin` user.
 Copy the `lupload.py` Python 3 program to the same directory as the Lua script
 you want to upload.
 
-Change to change directory in the command prompt.
+Change to that directory in the command prompt.
 
 Type a command line similar to:
 
@@ -99,7 +99,7 @@ on every upload would soon become annoying.
 ## The autoStart and autoRestart options
 
 Lua scripts on the PDU can be set to start automatically when the PDU initially boots
-or is reset. They can also be set to restart should they exit for any reason. One the PDU
+or is reset. They can also be set to restart should they exit for any reason. On the PDU
 this is specified by ticking the boxes next to the following options:
 
 ```
@@ -111,7 +111,7 @@ on the `Edit Script` page.
 
 By default when the `lupload.py` program uploads a Lua script these options will be
 unticked/blank even if they were previously ticked/set. If a script needs one or both
-of these options set then put either of both of the following comment lines near the
+of these options set then put either or both of the following comment lines near the
 top of the Lua script:
 
 ```
@@ -121,6 +121,8 @@ top of the Lua script:
 ```
 -- autoRestart:=yes
 ```
+
+Note: the above comments must exactly for this to feature work.
 
 ## Default arguments
 
