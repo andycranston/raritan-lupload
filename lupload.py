@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 #
-# @(!--#) @(#) lupload.py, version 005, 22-june-2020
+# @(!--#) @(#) lupload.py, version 006, 23-june-2020
 #
 # copy a Lua script to a Raritan intelligent PDU
 #
@@ -143,11 +143,15 @@ def main():
     
     timeout = args.timeout
     
-    if not script.lower().endswith('.lua'):
+    if (not script.endswith('.lua')) and (not script.endswith('.LUA')):
         print('{}: script name "{}" does not have a .lua or .LUA suffix'.format(progname, script), file=sys.stderr)
         sys.exit(1)
     
-    basescript = basename(script, ['lua'])
+    if len(script) < 5:    
+        print('{}: script name "{}" is too short'.format(progname, script), file=sys.stderr)
+        sys.exit(1)
+    
+    basescript = script[:-4]
     
     if not validscriptname(basescript):
         print('{}: script name "{}" contains invalid characters'.format(progname, script), file=sys.stderr)
@@ -171,7 +175,7 @@ def main():
     
     autoStart, autoRestart = extractstartrestart(script)
     
-    print(autoStart, autoRestart)
+    ### print(autoStart, autoRestart)
         
     scriptoptions = raritan.rpc.luaservice.ScriptOptions(
                   defaultArgs = {},
@@ -182,7 +186,7 @@ def main():
     rc = luaservice_proxy.setScript(basescript, scriptcontent, scriptoptions)
     
     if rc == 0:
-        print('Upload of Luascript "{}" to PDU {} successful'.format(basescript, pduname))
+        print('Upload of Lua script "{}" to PDU {} successful'.format(basescript, pduname))
     else:
         print('{}: upload failed with error code {} - {}'.format(progname, rc, errortext(rc)), file=sys.stderr)
         sys.exit(1)
