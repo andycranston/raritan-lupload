@@ -211,7 +211,7 @@ def main():
     
     defaultArgs = extractdefaultargs(script)
     
-    print(defaultArgs)
+    ### print(defaultArgs)
         
     scriptoptions = raritan.rpc.luaservice.ScriptOptions(
                   defaultArgs = defaultArgs,
@@ -230,7 +230,7 @@ def main():
     rc = luaservice_proxy.clearScriptOutput(basescript)
     
     if rc == 0:
-        print('Script "{}" output buffer cleared'.format(basescript))
+        print('Output buffer for script "{}" has been cleared'.format(basescript))
     else:
         print('INFO: unable to clear output buffer of script "{}"'.format(basescript))
         print('      return code = {} - {}'.format(rc, errortext(rc)))
