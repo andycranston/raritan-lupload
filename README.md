@@ -34,9 +34,11 @@ If everything works a message similar to:
 
 ```
 Upload of Lua script "monitor-current" to PDU px3rack successful
+Output buffer for script "monitor-current" has been cleared
 ```
 
-If there was a problem an error message will be displayed.
+will be displayed. If there was a problem an error
+message will be displayed.
 
 ## Script output buffer gets cleared after successful upload
 
@@ -99,7 +101,7 @@ without the `.lua` suffix.
 Beware that if a PDU already contains a script with the same name it will be
 overwritten without warning. This seems dangerous but bear in mind that the primary
 use of the `lupload.py` program is to upload subsequent revisions of the same
-script while it is being developed. Having a `Are you sure (yes/np)` style prompt
+script while it is being developed. Having a `Are you sure (yes/no)` style prompt
 on every upload would soon become annoying.
 
 ## The autoStart and autoRestart options
@@ -128,7 +130,7 @@ top of the Lua script:
 -- autoRestart:=yes
 ```
 
-Note: the above comments must exactly for this to feature work.
+Note: the above comments must be exactly as shown above for this to feature work.
 
 ## Default arguments
 
