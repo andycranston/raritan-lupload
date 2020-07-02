@@ -30,9 +30,7 @@ local np = pdu:getNameplate()
 local md = pdu:getMetaData()
 
 io.write("***********************\n")
-io.write("***********************\n")
 io.write("* General Information *\n")
-io.write("***********************\n")
 io.write("***********************\n")
 io.write("\n")
 
