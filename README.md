@@ -2,6 +2,12 @@
 
 A Python 3 utility to upload a Lua script to a Raritan intelligent PDU.
 
+## Demo video
+
+A short (just under three minutes) demo video:
+
+[Uploading Lua scripts to a Raritan PDU](https://www.youtube.com/watch?v=UCAHhq7aKLY)
+
 ## Requirements
 
 You will need:
